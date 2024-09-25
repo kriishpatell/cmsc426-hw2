@@ -1,10 +1,12 @@
+import os
 import requests
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
+
 carts = {}
 
-PRODUCT_SERVICE_URL = 'http://localhost:5000' 
+PRODUCT_SERVICE_URL = os.environ.get('PRODUCT_SERVICE_URL', 'http://localhost:5000')
 
 @app.route('/cart/<int:user_id>', methods=['GET'])
 def get_cart(user_id):
@@ -17,13 +19,13 @@ def get_cart(user_id):
 @app.route('/cart/<int:user_id>/add/<int:product_id>', methods=['POST'])
 def add_to_cart(user_id, product_id):
     quantity = request.json.get('quantity', 1)
+    try:
+        response = requests.get(f'{PRODUCT_SERVICE_URL}/products/{product_id}')
+        response.raise_for_status()
+        product = response.json()
+    except requests.RequestException as e:
+        return jsonify({'message': f'Error fetching product: {str(e)}'}), 500
 
-    response = requests.get(f'{PRODUCT_SERVICE_URL}/products/{product_id}')
-    if response.status_code != 200:
-        return jsonify({'message': 'Product not found'}), 404
-    
-    product = response.json()
-    
     if user_id not in carts:
         carts[user_id] = {}
     
