@@ -37,11 +37,6 @@ def add_product():
     db.session.commit()
     return jsonify({'message': 'Product was successfully added'}), 201
 
-@app.errorhandler(500)
-def internal_error(error):
-    app.logger.error('Server Error: %s', (error))
-    return jsonify(error=str(error)), 500
-
 with app.app_context():
     db.create_all()
 
