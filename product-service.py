@@ -19,6 +19,10 @@ class Product(db.Model):
     price = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
+@app.route('/', methods=['GET'])
+def product_service_home():
+    return "This is the product service"
+
 @app.route('/products', methods=['GET'])
 def get_products():
     products = Product.query.all()
