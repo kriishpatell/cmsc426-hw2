@@ -8,6 +8,10 @@ carts = {}
 
 PRODUCT_SERVICE_URL = os.environ.get('PRODUCT_SERVICE_URL', 'http://localhost:5000')
 
+@app.route('/', methods=['GET'])
+def cart_service_home():
+    return "This is the cart service"
+
 @app.route('/cart/<int:user_id>', methods=['GET'])
 def get_cart(user_id):
     if user_id not in carts:
